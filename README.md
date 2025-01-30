@@ -6,7 +6,15 @@ Depends on fzf-lua to extend upon.
 
 ## In Action
 
-TODO
+### Inline
+
+https://github.com/user-attachments/assets/844e9dc6-1859-43b7-b4b2-4a610bf03036
+
+
+### Live grep
+
+https://github.com/user-attachments/assets/02664751-ec79-4d58-b395-f2f8f7e87396
+
 
 ## Installation
 
