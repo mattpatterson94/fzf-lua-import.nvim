@@ -1,7 +1,7 @@
 local M = {}
 
 M.rg_ts_regex = function(query)
-  -- eg. import { SettingsPageRoutes } from 'pages/settings/routes/route_paths';
+  -- eg. import { SomeModule } from 'some/directory/some_module';
   -- eg. import * as mobx from 'mobx'
   -- eg. import styles from "myfile.css"
   return "^import\\s*(type\\s+)?(\\*?\\s*\\{[^}]*"

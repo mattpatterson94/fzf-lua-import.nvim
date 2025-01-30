@@ -18,10 +18,13 @@ local M = {
 
 M.import = function(opts)
   local command = commands.commands[opts.args]
-  local filetype = utils.get_filetype()
+  local command_args = {
+    filetype = utils.get_filetype(),
+    cword = vim.fn.expand("<cword>"),
+  }
 
   if command then
-    command(M.config, filetype)
+    command(M.config, command_args)
   else
     print("Unknown command: " .. opts.args)
   end
@@ -51,12 +54,9 @@ function M.setup(config)
       )
     end
   end
-
-  -- Hook into LSP
 end
 
 return M
 
 -- TODO:
---   - Hook into LSP somehow
 --   - Can we use the duplicate functionality in here and add into our code?
