@@ -1,4 +1,4 @@
-local commands = require("commands")
+local commands = require("config")
 local utils = require("utils")
 local actions = require("actions")
 
@@ -26,6 +26,16 @@ local M = {
   },
 }
 
+local create_rg_glob_fn = function(filetype_opts)
+  local glob = string.format("--glob '*.{%s}'", table.concat(filetype_opts.glob, ","))
+
+  return function(q)
+    -- regex contains two placeholders
+    local search = string.format(filetype_opts.regex, q, q)
+    return search, glob
+  end
+end
+
 M.import = function(opts)
   local command = commands.commands[opts.args]
 
@@ -34,13 +44,9 @@ M.import = function(opts)
     local filetype_opts = commands.filetypes[filetype]
 
     if filetype_opts then
-      local local_opts = {
-        rg_glob_fn = function(q)
-          return filetype_opts.regex(q or ""),
-            string.format("--glob '%s'", filetype_opts.glob(opts.include_dir))
-        end,
-      }
-      command(vim.tbl_deep_extend("keep", local_opts, M.config.fzf_lua_opts))
+      command(vim.tbl_deep_extend("keep", {
+        rg_glob_fn = create_rg_glob_fn(filetype_opts),
+      }, M.config.fzf_lua_opts))
     else
       return print("Unsupported filetype: " .. filetype)
     end
