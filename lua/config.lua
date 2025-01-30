@@ -2,7 +2,11 @@ local fzf_lua_grep = require("fzf-lua/providers/grep")
 
 local types = {
   ts = {
-    regex = "^import\\s*(type\\s+)?(\\*?\\s*\\{[^}]*%s[^}]*\\}|\\*?\\s*%s)\\s*from",
+    -- eg. import { SettingsPageRoutes } from 'pages/settings/routes/route_paths';
+    -- eg. import * as mobx from 'mobx'
+    -- eg. import styles from "myfile.css"
+    -- does not match relative paths like import styles from "./myfile.css" (can be disabled by removing the \w at the end)
+    regex = "^import\\s*(type\\s+)?(\\*?\\s*\\{[^}]*%s[^}]*\\}|\\*?\\s*%s)\\s*from\\s[\\\"\\']\\w",
     glob = { "ts", "tsx", "js", "jsx" },
   },
 }
