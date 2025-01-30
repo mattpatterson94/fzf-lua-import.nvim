@@ -1,7 +1,9 @@
+local fzf_lua_utils = require("fzf-lua/utils")
+
 local M = {}
 
 M.parse_query = function(query)
-  return vim.fn.shellescape(query or "")
+  return fzf_lua_utils.rg_escape(query or "")
 end
 
 M.copy_to_register = function(text, register)

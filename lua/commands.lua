@@ -2,6 +2,7 @@ local rg = require("rg")
 local utils = require("utils")
 local actions = require("actions")
 local fzf_lua = require("fzf-lua")
+local fzf_lua_grep = require("fzf-lua/providers/grep")
 
 local M = {}
 
@@ -12,7 +13,7 @@ M.live_grep = function(opts, cmd_args)
     ["default"] = actions.add_to_buffer,
   }
 
-  local command = M.filetypes[cmd_args.filetype]
+  local filetype_opts = M.filetypes[cmd_args.filetype]
 
   if command then
     return fzf_lua.fzf_live(function(q)
@@ -27,24 +28,30 @@ end
 M.grep_cword = function(opts, cmd_args)
   opts = opts or {}
   local query = cmd_args.cword
-  opts.prompt = "Imports matching " .. query .. "> "
+  opts.prompt = string.format("Imports matching %s>", query)
   opts.actions = {
     ["default"] = actions.add_to_buffer,
   }
 
-  local command = M.filetypes[cmd_args.filetype]
+  opts.no_esc = true
 
-  if command then
-    return fzf_lua.fzf_exec(command(query, opts.include_dirs), opts)
+  local filetype_opts = M.filetypes[cmd_args.filetype]
+
+  if filetype_opts then
+    opts.search = filetype_opts.regex(query)
+    opts.rg_opts =
+      string.format("%s --glob '%s'", opts.rg_opts, filetype_opts.glob(opts.include_dir))
+
+    return fzf_lua_grep.grep(opts)
   else
     return print("Unsupported filetype: " .. cmd_args.filetype)
   end
 end
 
 M.filetypes = {
-  typescript = rg.rg_ts,
-  typescriptreact = rg.rg_ts,
-  javascript = rg.rg_ts,
+  typescript = rg.rg_ts_opts,
+  typescriptreact = rg.rg_ts_opts,
+  javascript = rg.rg_ts_opts,
 }
 
 M.commands = {

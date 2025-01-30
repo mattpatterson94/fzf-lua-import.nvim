@@ -24,6 +24,22 @@ M.rg_ts = function(query, include_dirs)
   return M.rg(regex, glob)
 end
 
+M.rg_ts_glob = function(include_dirs)
+  local include = ""
+  if include_dirs then
+    include = "{"
+    include = include .. table.concat(include_dirs, ",")
+    include = include .. "}"
+  end
+
+  return include .. "*.{ts,tsx}"
+end
+
+M.rg_ts_opts = {
+  regex = M.rg_ts_regex,
+  glob = M.rg_ts_glob,
+}
+
 M.rg = function(regex, glob)
   return "rg --color=always -i --no-column --no-line-number --no-filename '"
     .. regex

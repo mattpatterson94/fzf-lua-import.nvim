@@ -9,6 +9,7 @@ local M = {
     previewer = false,
     multiprocess = true,
     hidden = false,
+    rg_opts = "--column --no-filename -n --no-heading --color=always --smart-case --no-column --no-line-number",
     keys = {
       { key = "<leader>ci", mode = { "n" }, command = "live_grep", enabled = true },
       { key = "<leader>cI", mode = { "n" }, command = "grep_cword", enabled = true },
