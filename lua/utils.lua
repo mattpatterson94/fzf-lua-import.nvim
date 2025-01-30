@@ -16,8 +16,7 @@ end
 
 M.get_filetype = function()
   local bufnr = vim.api.nvim_get_current_buf()
-  local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-  return filetype
+  return vim.bo[bufnr].filetype
 end
 
 M.remove_duplicates = function(inputTable)
