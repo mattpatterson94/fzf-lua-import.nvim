@@ -1,4 +1,5 @@
 local rg = require("rg")
+local utils = require("utils")
 local actions = require("actions")
 
 local M = {
@@ -16,11 +17,13 @@ local M = {
 M.live_grep = function(opts)
   local fzf_lua = require("fzf-lua")
   opts = opts or M.config
+  opts.prompt = "Imports> "
   opts.actions = {
     ["default"] = actions.add_to_buffer,
   }
+
   return fzf_lua.fzf_live(function(q)
-    local parsed_q = M.parse_query(q)
+    local parsed_q = utils.parse_query(q)
     return rg.rg_ts(parsed_q, opts.include_dirs)
   end, opts)
 end
@@ -28,18 +31,14 @@ end
 function M.setup(config)
   M.config = vim.tbl_deep_extend("keep", config or {}, M.config)
 
-  vim.api.nvim_create_user_command(
-    "Import", -- Command name
-    M.live_grep, -- Function to execute
-    {} -- Options (optional)
-  )
+  -- :Import
+  vim.api.nvim_create_user_command("Import", M.live_grep, {})
   -- Hook into LSP
 end
 
 return M
 
 -- TODO:
---   - Make work on function like :Import
 --   - Register based on filetype
 --   - Hook into LSP somehow
 --   - Can we use the duplicate functionality in here and add into our code?
