@@ -1,15 +1,24 @@
 local commands = require("commands")
 local utils = require("utils")
+local actions = require("actions")
 
 local M = {
   config = {
-    git_icons = false,
-    file_icons = false,
-    color_icons = false,
-    previewer = false,
-    multiprocess = true,
-    hidden = false,
-    rg_opts = "--column --no-filename -n --no-heading --color=always --smart-case --no-column --no-line-number",
+    fzf_lua_opts = {
+      git_icons = false,
+      file_icons = false,
+      color_icons = false,
+      previewer = false,
+      hidden = false,
+      multiprocess = false,
+      rg_opts = "--column --no-filename -n --no-heading --color=always --smart-case --no-column --no-line-number",
+      glob_separator = "--",
+      prompt = "Imports> ",
+      rg_glob = true,
+      actions = {
+        ["default"] = actions.add_to_buffer,
+      },
+    },
     keys = {
       { key = "<leader>ci", mode = { "n" }, command = "live_grep", enabled = true },
       { key = "<leader>cI", mode = { "n" }, command = "grep_cword", enabled = true },
@@ -19,13 +28,22 @@ local M = {
 
 M.import = function(opts)
   local command = commands.commands[opts.args]
-  local command_args = {
-    filetype = utils.get_filetype(),
-    cword = vim.fn.expand("<cword>"),
-  }
 
   if command then
-    command(M.config, command_args)
+    local filetype = utils.get_filetype()
+    local filetype_opts = commands.filetypes[filetype]
+
+    if filetype_opts then
+      local local_opts = {
+        rg_glob_fn = function(q)
+          return filetype_opts.regex(q or ""),
+            string.format("--glob '%s'", filetype_opts.glob(opts.include_dir))
+        end,
+      }
+      command(vim.tbl_deep_extend("keep", local_opts, M.config.fzf_lua_opts))
+    else
+      return print("Unsupported filetype: " .. filetype)
+    end
   else
     print("Unknown command: " .. opts.args)
   end
@@ -58,6 +76,3 @@ function M.setup(config)
 end
 
 return M
-
--- TODO:
---   - Can we use the duplicate functionality in here and add into our code?
