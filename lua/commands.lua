@@ -16,8 +16,8 @@ M.live_grep = function(opts, cmd_args)
 
   if command then
     return fzf_lua.fzf_live(function(q)
-      local parsed_q = utils.parse_query(q)
-      return command(parsed_q, opts.include_dirs)
+      local query = utils.parse_query(q)
+      return command(query, opts.include_dirs)
     end, opts)
   else
     return print("Unsupported filetype: " .. cmd_args.filetype)
@@ -26,8 +26,8 @@ end
 
 M.grep_cword = function(opts, cmd_args)
   opts = opts or {}
-  local parsed_q = utils.parse_query(cmd_args.cword)
-  opts.prompt = "Imports matching " .. parsed_q .. "> "
+  local query = cmd_args.cword
+  opts.prompt = "Imports matching " .. query .. "> "
   opts.actions = {
     ["default"] = actions.add_to_buffer,
   }
@@ -35,7 +35,7 @@ M.grep_cword = function(opts, cmd_args)
   local command = M.filetypes[cmd_args.filetype]
 
   if command then
-    return fzf_lua.fzf_exec(command(parsed_q, opts.include_dirs), opts)
+    return fzf_lua.fzf_exec(command(query, opts.include_dirs), opts)
   else
     return print("Unsupported filetype: " .. cmd_args.filetype)
   end
