@@ -47,6 +47,20 @@ require("fzf-lua-import").setup()
 
 ## Usage
 
+
+### Commands
+
+```lua
+-- perform a live grep for import
+:Import live_grep
+-- search for the word under the cursor
+:Import grep_cword
 ```
-:Import 
+
+### Default keymap
+
+```lua
+<leader>ci - live grep
+<leader>cI - grep_cword
 ```
+
