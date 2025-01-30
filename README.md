@@ -63,6 +63,3 @@ require("fzf-lua-import").setup()
 <leader>ci - live grep
 <leader>cI - grep_cword
 ```
-## TODO
-
-- Remove duplicates
