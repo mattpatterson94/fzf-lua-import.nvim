@@ -52,9 +52,9 @@ require("fzf-lua-import").setup()
 
 ```lua
 -- perform a live grep for import
-:Import live_grep
+:FzfImport live_grep
 -- search for the word under the cursor
-:Import grep_cword
+:FzfImport grep_cword
 ```
 
 ### Default keymap

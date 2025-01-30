@@ -34,7 +34,7 @@ function M.setup(config)
   M.config = vim.tbl_deep_extend("keep", config or {}, M.config)
 
   -- Commands
-  vim.api.nvim_create_user_command("Import", M.import, {
+  vim.api.nvim_create_user_command("FzfImport", M.import, {
     nargs = 1,
     complete = function(arg_lead)
       return vim.tbl_filter(function(val)
@@ -49,7 +49,7 @@ function M.setup(config)
       vim.keymap.set(
         key.mode,
         key.key,
-        "<cmd>Import " .. key.command .. "<CR>",
+        "<cmd>FzfImport " .. key.command .. "<CR>",
         { desc = "fzf-lua-import " .. key.command }
       )
     end
