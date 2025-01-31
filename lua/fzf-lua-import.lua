@@ -1,6 +1,7 @@
 local commands = require("config")
 local utils = require("utils")
 local actions = require("actions")
+local make_entry = require("fzf-lua.make_entry")
 
 local M = {
   config = {
@@ -21,7 +22,8 @@ local M = {
     },
     keys = {
       { key = "<leader>ci", mode = { "n" }, command = "live_grep", enabled = true },
-      { key = "<leader>cI", mode = { "n" }, command = "grep_cword", enabled = true },
+      { key = "<leader>ci", mode = { "v" }, command = "grep_visual", enabled = true },
+      { key = "<leader>cI", mode = { "v", "n" }, command = "grep_cword", enabled = true },
     },
   },
 }
@@ -36,6 +38,23 @@ local create_rg_glob_fn = function(filetype_opts)
   end
 end
 
+-- Filter out duplicates
+local create_fn_transform = function(opts)
+  local results = {}
+
+  return function(x)
+    -- Every now and then clear the results
+    if vim.tbl_count(results) > 1000 then
+      results = {}
+    end
+
+    if results[x] == nil then
+      results[x] = true
+      return make_entry.file(x, opts)
+    end
+  end
+end
+
 M.import = function(opts)
   local command = commands.commands[opts.args]
 
@@ -46,6 +65,7 @@ M.import = function(opts)
     if filetype_opts then
       command(vim.tbl_deep_extend("keep", {
         rg_glob_fn = create_rg_glob_fn(filetype_opts),
+        fn_transform = create_fn_transform(M.config.fzf_lua_opts),
       }, M.config.fzf_lua_opts))
     else
       return print("Unsupported filetype: " .. filetype)
