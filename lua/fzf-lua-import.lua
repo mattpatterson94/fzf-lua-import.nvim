@@ -22,7 +22,8 @@ local M = {
     },
     keys = {
       { key = "<leader>ci", mode = { "n" }, command = "live_grep", enabled = true },
-      { key = "<leader>cI", mode = { "n" }, command = "grep_cword", enabled = true },
+      { key = "<leader>ci", mode = { "v" }, command = "grep_visual", enabled = true },
+      { key = "<leader>cI", mode = { "v", "n" }, command = "grep_cword", enabled = true },
     },
   },
 }

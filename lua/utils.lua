@@ -32,4 +32,12 @@ M.line_exists_in_buffer = function(line, buffer)
   return false
 end
 
+M.get_visual_selection = function()
+  return fzf_lua_utils.get_visual_selection()
+end
+
+M.get_cword = function()
+  return vim.fn.expand("<cword>")
+end
+
 return M
