@@ -42,6 +42,11 @@ local create_fn_transform = function(opts)
   local results = {}
 
   return function(x)
+    -- Every now and then clear the results
+    if vim.tbl_count(results) > 1000 then
+      results = {}
+    end
+
     if results[x] == nil then
       results[x] = true
       return make_entry.file(x, opts)
