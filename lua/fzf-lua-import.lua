@@ -32,13 +32,15 @@ local create_rg_glob_fn = function(filetype_opts)
   local glob = string.format("--glob '*.{%s}'", table.concat(filetype_opts.glob, ","))
 
   return function(q)
-    -- regex contains two placeholders
-    local search = string.format(filetype_opts.regex, q, q)
+    -- Escape % characters in the query to avoid string.format issues
+    local escaped_q = q:gsub("%%", "%%%%")
+    -- regex contains a single placeholder now
+    local search = string.format(filetype_opts.regex, escaped_q)
     return search, glob
   end
 end
 
--- Filter out duplicates
+-- Filter out duplicates and relative imports
 local create_fn_transform = function(opts)
   local results = {}
 
@@ -46,6 +48,11 @@ local create_fn_transform = function(opts)
     -- Every now and then clear the results
     if vim.tbl_count(results) > 1000 then
       results = {}
+    end
+
+    -- Skip relative imports (starting with ./ or ../)
+    if x:match("from%s+['\"]%.%./") or x:match("from%s+['\"]%.%/") then
+      return
     end
 
     if results[x] == nil then
@@ -66,6 +73,9 @@ M.import = function(opts)
       command(vim.tbl_deep_extend("keep", {
         rg_glob_fn = create_rg_glob_fn(filetype_opts),
         fn_transform = create_fn_transform(M.config.fzf_lua_opts),
+        fzf_opts = {
+          ["--bind"] = "ctrl-g:toggle-preview+toggle-search"
+        }
       }, M.config.fzf_lua_opts))
     else
       return print("Unsupported filetype: " .. filetype)

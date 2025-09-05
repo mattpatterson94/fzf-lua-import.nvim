@@ -7,7 +7,7 @@ local types = {
     -- eg. import * as mobx from 'mobx'
     -- eg. import styles from "myfile.css"
     -- does not match relative paths like import styles from "./myfile.css" (can be disabled by removing the \w at the end)
-    regex = "^import\\s*(type\\s+)?(\\*\\s*as)?(\\*?\\s*\\{?[^}]%s[^}]*\\}?|\\*?\\s%s)\\s*from\\s[\\\"\\']@?\\/?\\w",
+    regex = "^import.*%s.*from\\s+['\\\"][^'\\\"]+",
     glob = { "ts", "tsx", "js", "jsx" },
   },
 }
