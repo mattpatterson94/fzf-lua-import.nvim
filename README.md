@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This has been archived in favour of [fzf-import-cli](https://github.com/mattpatterson94/fzf-import-cli). Please use that instead (follow the instructions for setting up in nvim).
+
 # fzf-lua-import.nvim
 
 For when the lsp fails to identify modules in your codebase. Quickly search for modules and add the import statement to your buffer.
